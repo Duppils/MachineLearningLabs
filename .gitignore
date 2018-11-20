@@ -1,0 +1,5 @@
+# ignore the dataset file as it's machine dependant
+lab3/3.1-flowers_create_dataset.py
+
+# untrack datasets
+Datasets/

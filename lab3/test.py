@@ -18,7 +18,7 @@ model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 #example parameters: metrics, loss, optimizer, etc.
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='sgd',
+              optimizer='sdg',
               metrics=['accuracy'])
 
 #Version2
