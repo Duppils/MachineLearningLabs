@@ -14,7 +14,7 @@ conv_base = VGG16(weights='imagenet', include_top=False, input_shape=(150, 150, 
 #pick a model
 model = models.Sequential()
 
-path = open("path.conf", "r").read()
+path = str(open("path.conf", "r").read()).rstrip('\n')
 
 dataset = os.path.join(path)
 
