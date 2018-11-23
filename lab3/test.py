@@ -35,7 +35,7 @@ def extract_features(directory, sample_count):
     labels = np.zeros(shape=(sample_count))
     generator = datagen.flow_from_directory(
         directory,
-        target_size=(150, 150),
+        target_size=(150, 150),  #Scale image to 150x150 pixels
         batch_size=batch_size,
         class_mode='binary')
     i = 0
@@ -50,13 +50,13 @@ def extract_features(directory, sample_count):
             break
     return features, labels
 
-train_features, train_labels = extract_features(train_dir, 4215)
-validation_features, validation_labels = extract_features(validation_dir, 2529)
-test_features, test_labels = extract_features(test_dir, 2547)
+train_features, train_labels = extract_features(train_dir, 2594)
+validation_features, validation_labels = extract_features(validation_dir, 864)
+test_features, test_labels = extract_features(test_dir, 865)
 
-train_features = np.reshape(train_features, (4215, 4 * 4 * 512))
-validation_features = np.reshape(validation_features, (2529, 4 * 4 * 512))
-test_features = np.reshape(test_features, (2547, 4 * 4 * 512))
+train_features = np.reshape(train_features, (2594, 4 * 4 * 512))
+validation_features = np.reshape(validation_features, (864, 4 * 4 * 512))
+test_features = np.reshape(test_features, (865, 4 * 4 * 512))
 
 
 #####LAYERS#####
@@ -65,11 +65,11 @@ model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.Conv2D(128, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Flatten())
 model.add(layers.Dense(256, activation='relu'))
-model.add(layers.Dense(1, activation='sigmoid'))
+model.add(layers.Dense(5, activation='softmax'))
 
 model.summary()
 
@@ -79,7 +79,7 @@ model.summary()
 #compile your model- specify how your model should learn
 #example parameters: metrics, loss, optimizer, etc.
 #check cheatsheet for appropriate types
-model.compile(loss='binary_crossentropy', optimizer=optimizers.nadam(lr=1e-4), metrics=['acc'])
+model.compile(loss='categorical_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
 
 # All images will be rescaled by 1./255
 #train_datagen = ImageDataGenerator(rescale=1./255)
