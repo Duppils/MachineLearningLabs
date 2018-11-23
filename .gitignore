@@ -4,3 +4,5 @@ lab3/3.1-flowers_create_dataset.py
 # untrack datasets
 Datasets/
 datasets/
+
+*.conf

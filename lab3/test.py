@@ -14,7 +14,9 @@ conv_base = VGG16(weights='imagenet', include_top=False, input_shape=(150, 150, 
 #pick a model
 model = models.Sequential()
 
-dataset = os.path.join("/home/lnxturing/School/EDAN95/MachineLearningLabs/Datasets/flowers_split/")
+path = open("path.conf", "r").read()
+
+dataset = os.path.join(path)
 
 train_dir = os.path.join(dataset, 'train')
 validation_dir = os.path.join(dataset, 'validation')
