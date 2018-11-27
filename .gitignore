@@ -6,3 +6,4 @@ Datasets/
 datasets/
 
 *.conf
+*.h5
