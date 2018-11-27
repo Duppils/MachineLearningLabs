@@ -11,8 +11,6 @@ import os #os.listdir() lists all files in a directory
 
 #conv_base = VGG16(weights='imagenet', include_top=False, input_shape=(150, 150, 3))
 #####MODEL#####
-#pick a model
-model = models.Sequential()
 
 path = str(open("path.conf", "r").read()).rstrip('\n')
 
@@ -35,12 +33,14 @@ def get_gen(directory, sample_count):
         directory,
         target_size=(150, 150),  #Scale image to 150x150 pixels
         batch_size=batch_size,
-        class_mode='binary')
+        class_mode='categorical')
     return generator 
 
 
 #####LAYERS#####
 #add layers to the model
+#pick a model
+model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
@@ -53,11 +53,14 @@ model.add(layers.Dense(5, activation='softmax'))
 
 model.summary()
 
-train_generator = get_gen(train_dir, 30)
-validation_generator = get_gen(validation_dir, 30)
+from keras.utils import to_categorical
+#binary = to_categorical(
+
+train_generator=get_gen(train_dir, 30)
+validation_generator=get_gen(validation_dir, 30)
 
 #check cheatsheet for appropriate types
-model.compile(loss='categorical_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+model.compile(loss='categorical_crossentropy', optimizer='RMSprop', metrics=['acc'])
 
 model.save('scnn.h5')
 
