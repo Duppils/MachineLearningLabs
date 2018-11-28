@@ -40,6 +40,15 @@ train_datagen = ImageDataGenerator(
       horizontal_flip=True,
       fill_mode='nearest')
 
+#count = len(conv_base.layers)
+#i = 0
+#for layer in conv_base.layers:
+#    i = i+1
+#    if (count/1.1 < i):
+#        layer.trainable = True
+#    else:
+#        layer.trainable = False
+
 # Note that the validation data should not be augmented!
 test_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -56,7 +65,7 @@ validation_generator = test_datagen.flow_from_directory(
         class_mode='categorical')
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='RMSprop',
+              optimizer=optimizers.RMSprop(lr=1e-4),
               metrics=['acc'])
 
 history = model.fit_generator(
