@@ -7,3 +7,4 @@ datasets/
 
 *.conf
 *.h5
+*.npz
