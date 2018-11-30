@@ -40,10 +40,13 @@ def extract_features(directory, sample_count):
     return features, labels
 
 files = os.listdir(path + "lab3/")
-if("train_data.npz" in files &&"test_data.npz" in files && "validation_data.npz" in files):
-    train_features, train_labels = load("train_data")
-    test_features, test_labels = load("test_data")
-    validation_features, validation_labels = load("validation_data")
+if("train_data.npz" in files and "test_data.npz" in files and "validation_data.npz" in files):
+    train_features = np.load("train_data.npz")["train_features"] 
+    train_labels = np.load("train_data.npz")["train_labels"]
+    test_features = np.load("test_data.npz")["test_features"] 
+    test_labels = np.load("test_data.npz")["test_labels"]
+    validation_features = np.load("validation_data.npz")["validation_features"] 
+    validation_labels = np.load("validation_data.npz")["validation_labels"]
 else:
     train_features, train_labels = extract_features(train_dir, 2594)
     validation_features, validation_labels = extract_features(validation_dir, 864)
@@ -53,9 +56,9 @@ else:
     validation_features = np.reshape(validation_features, (864, 3 * 3 * 2048))
     test_features = np.reshape(test_features, (865, 3 * 3 * 2048))
 
-    np.savez("train_data.txt", train_features=train_features, train_labels=train_labels)
-    np.savez("test_data.txt", test_features=train_features, test_labels=train_labels)
-    np.savez("validation_data.txt", validation_features=train_features, validation_labels=train_labels)
+    np.savez("train_data", train_features=train_features, train_labels=train_labels)
+    np.savez("test_data", test_features=train_features, test_labels=train_labels)
+    np.savez("validation_data", validation_features=train_features, validation_labels=train_labels)
 
 
 #####LAYERS#####
