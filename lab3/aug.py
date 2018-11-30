@@ -29,7 +29,6 @@ test_dir = os.path.join(dataset, 'test')
 datagen = ImageDataGenerator( rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest') 
 batch_size = 20
 
-fnames = [os.path.join(train_dir, fname) for fname in os.listdir(train_dir)]
 
 train_datagen = ImageDataGenerator( rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True,)
 
@@ -53,8 +52,8 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(128, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Flatten())
-model.add(layers.Dropout(0.5))
 model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dropout(0.5))
 model.add(layers.Dense(5, activation='softmax'))
 
 model.summary()
