@@ -9,10 +9,9 @@ from keras.applications import InceptionV3
 import os #os.listdir() lists all files in a directory
 
 conv_base = InceptionV3(weights='imagenet', include_top=False, input_shape=(150, 150, 3))
-conv_base.summary()
 
 path = str(open("path.conf", "r").read()).rstrip('\n')
-dataset = os.path.join(path)
+dataset = os.path.join(path, "Datasets/flowers_split/")
 
 train_dir = os.path.join(dataset, 'train')
 validation_dir = os.path.join(dataset, 'validation')
@@ -40,13 +39,24 @@ def extract_features(directory, sample_count):
             break
     return features, labels
 
-train_features, train_labels = extract_features(train_dir, 2595)
-validation_features, train_labels = extract_features(validation_dir, 865)
-test_features, test_labels = extract_features(test_dir, 865)
+files = os.listdir(path + "lab3/")
+if("train_data.npz" in files &&"test_data.npz" in files && "validation_data.npz" in files):
+    train_features, train_labels = load("train_data")
+    test_features, test_labels = load("test_data")
+    validation_features, validation_labels = load("validation_data")
+else:
+    train_features, train_labels = extract_features(train_dir, 2594)
+    validation_features, validation_labels = extract_features(validation_dir, 864)
+    test_features, test_labels = extract_features(test_dir, 865)
 
-train_features = np.reshape(train_features, (2595, 3 * 3 * 2048))
-validation_features = np.reshape(validation_features, (865, 3 * 3 * 2048))
-test_features = np.reshape(test_features, (866, 3 * 3 * 2048))
+    train_features = np.reshape(train_features, (2594, 3 * 3 * 2048))
+    validation_features = np.reshape(validation_features, (864, 3 * 3 * 2048))
+    test_features = np.reshape(test_features, (865, 3 * 3 * 2048))
+
+    np.savez("train_data.txt", train_features=train_features, train_labels=train_labels)
+    np.savez("test_data.txt", test_features=train_features, test_labels=train_labels)
+    np.savez("validation_data.txt", validation_features=train_features, validation_labels=train_labels)
+
 
 #####LAYERS#####
 model = models.Sequential()
@@ -58,4 +68,3 @@ model.compile(optimizer=optimizers.RMSprop(),
               metrics=['acc'])
 
 history = model.fit(train_features, train_labels, epochs=5, batch_size=20, validation_data=(validation_features, validation_labels))
-
