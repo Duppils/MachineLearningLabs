@@ -4,4 +4,6 @@
 
 - Vad görs i slutet i _split_in_words(self, sentence) ?? (Token(dict(zip(....))))
 
--
+- Varför används random state uniform metod i sammanhanget av embedding matrix?
+
+- Hur ska vi använda cosine similarity för collecting embeddings delen?
