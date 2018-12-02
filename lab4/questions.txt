@@ -1,0 +1,7 @@
+- Vilka filer ska vi läsa in i load? (se load_ud_en_ext() och load_conll2009_pos, där filändelserna är .conllu repsektive .txt)
+
+- Vad är syftet med list(map(str.lower, column_names))
+
+- Vad görs i slutet i _split_in_words(self, sentence) ?? (Token(dict(zip(....))))
+
+-
