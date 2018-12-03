@@ -19,6 +19,13 @@ from keras.layers import LSTM, Bidirectional, SimpleRNN, Dense
 trace = True
 path = str(open('path.conf', 'r').read()).strip()
 
+OPTIMIZER = 'rmsprop'
+BATCH_SIZE = 128
+EPOCHS = 2
+EMBEDDING_DIM = 100
+MAX_SEQUENCE_LENGTH = 150
+LSTM_UNITS = 512
+
 def load(file):
     """
     Return the embeddings in the from of a dictionary
@@ -160,7 +167,8 @@ model.layers[0].set_weights([embedding_matrix])
 # The default is True
 model.layers[0].trainable = True
 model.add(SimpleRNN(100, return_sequences=True))
-# model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
+model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
+#model.add(DropOut(0.5))
 # model.add(Bidirectional(LSTM(100, return_sequences=True)))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
