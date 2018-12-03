@@ -168,7 +168,7 @@ model.layers[0].set_weights([embedding_matrix])
 model.layers[0].trainable = True
 model.add(SimpleRNN(100, return_sequences=True))
 model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
-#model.add(DropOut(0.5))
+model.add(layers.Dropout(0.2))
 # model.add(Bidirectional(LSTM(100, return_sequences=True)))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
