@@ -1,7 +1,7 @@
 import os
 import numpy as np
 from conll_dictorizer import CoNLLDictorizer, Token
-import datasets.py as ds
+import datasets as ds
 import sys
 from sklearn.feature_extraction import DictVectorizer
 import time
@@ -17,7 +17,7 @@ from keras.layers import LSTM, Bidirectional, SimpleRNN, Dense
 
 
 trace = True
-path = str(open(path.conf, 'r').read()).strip()
+path = str(open('path.conf', 'r').read()).strip()
 
 def load(file):
     """
@@ -38,7 +38,7 @@ def load(file):
     embedded_words = sorted(list(embeddings_dict.keys()))
     return embeddings_dict
 
-def build_sequences(corpus_dict, key_x='form', key_y='upos', tolower=True):
+def build_sequences(corpus_dict, key_x='form', key_y='ppos', tolower=True): #key_y= upos
     """
     Creates sequences from a list of dictionaries
     :param corpus_dict:
@@ -94,14 +94,14 @@ def predict_sentence(sentence, model, word_idx,
         print('POS shape', pos_idx_pred.shape)
     return pos
 
-train_sentances, dev_sentances, test_sentances, column_names = ds.load_conll2003_en()
+train_sentences, dev_sentences, test_sentences, column_names = ds.load_conll2003_en()
 conll_dict = CoNLLDictorizer(column_names, col_sep='\t')
 train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
 
 embeddings_file = os.path.join(path, "corpus/glove.6B.100d.txt")
-embeddings_dict = load(embedding_file)
+embeddings_dict = load(embeddings_file)
 
 X_train_cat, Y_train_cat = build_sequences(train_dict) # Xfor words, Y for parts of speech (pos)
 
@@ -200,7 +200,8 @@ if(trace):
     print('Loss:', test_loss)
     print('Accuracy:', test_acc)
 
-corpus_pos_predictions = model.predict(X_test_padded)pos_pred_num = []
+corpus_pos_predictions = model.predict(X_test_padded)
+pos_pred_num = []
 for sent_nbr, sent_pos_predictions in enumerate(corpus_pos_predictions):
     pos_pred_num += [sent_pos_predictions[-len(X_test_cat[sent_nbr]):]]
 print(pos_pred_num[:2])
