@@ -5,6 +5,7 @@ lab3/3.1-flowers_create_dataset.py
 Datasets/
 datasets/
 corpus/
+__pycache__/
 
 *.conf
 *.h5

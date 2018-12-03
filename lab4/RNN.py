@@ -38,7 +38,7 @@ def load(file):
     embedded_words = sorted(list(embeddings_dict.keys()))
     return embeddings_dict
 
-def build_sequences(corpus_dict, key_x='form', key_y='ppos', tolower=True): #key_y= upos
+def build_sequences(corpus_dict, key_x='form', key_y='ppos', tolower=True): #key_u='upos' -> 'ppos'
     """
     Creates sequences from a list of dictionaries
     :param corpus_dict:
@@ -95,7 +95,7 @@ def predict_sentence(sentence, model, word_idx,
     return pos
 
 train_sentences, dev_sentences, test_sentences, column_names = ds.load_conll2003_en()
-conll_dict = CoNLLDictorizer(column_names, col_sep='\t')
+conll_dict = CoNLLDictorizer(column_names)
 train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
