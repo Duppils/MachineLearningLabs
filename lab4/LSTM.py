@@ -14,7 +14,7 @@ import math
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.layers import LSTM, Bidirectional, SimpleRNN, Dense
-
+from keras.callbacks import ModelCheckpoint
 
 trace = False
 path = str(open('path.conf', 'r').read()).strip()
@@ -220,15 +220,14 @@ for sent_nbr, sent_pos_predictions in enumerate(corpus_pos_predictions):
     pos_pred_num += [sent_pos_predictions[-len(X_test_cat[sent_nbr]):]]
 print(pos_pred_num[:2])
 
+#add pos pred to test_dict
 pos_pred = []
 for sentence in pos_pred_num:
     pos_pred_idx = list(map(np.argmax, sentence))
     pos_pred_cat = list(map(rev_pos_idx.get, pos_pred_idx))
     pos_pred += [pos_pred_cat]
+    test_dict[pos_pred_idx].append(pos_pred_cat)
 
-#add pos pred to test_dict
-for pred in pos_pred:
-    #add pred to test_dict in right column
 
 print(pos_pred[:2])
 print(Y_test_cat[:2])
