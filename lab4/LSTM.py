@@ -107,7 +107,8 @@ train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
 
-save('trainout.txt', train_dict, column_names)
+#change column names to have our predition column
+save('trainout.txt', test_dict, column_names)
 
 embeddings_file = os.path.join(path, "corpus/glove.6B.100d.txt")
 embeddings_dict = load(embeddings_file)
@@ -167,18 +168,19 @@ model = models.Sequential()
 model.add(layers.Embedding(len(vocabulary_words) + 2, EMBEDDING_DIM, mask_zero=True, input_length=None))
 model.layers[0].set_weights([embedding_matrix])
 # The default is True
-model.layers[0].trainable = True
-model.add(LSTM(100, return_sequences=True))
+model.layers[0].trainable = False
+#model.add(LSTM(100, return_sequences=True))
 #model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
-model.add(Bidirectional(LSTM(100, return_sequences=True)))
-model.add(layers.Dropout(0.2))
+model.add(Bidirectional(LSTM(100, dropout = 0.25, recurrent_dropout = 0.25, return_sequences=True)))
+model.add(layers.Dropout(0.25))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])
 model.summary()
-model.fit(X, Y_train, epochs=EPOCHS, batch_size=BATCH_SIZE)
-
-
+model.fit(X, Y_train, epochs=EPOCHS, batch_size=32, callbacks = [ModelCheckpoint("bestout.h5", save_best_only = True)]) #sök på model checkpoint
+#lägg till validation_data tuple (x, y)
+#dev_dict = validation
+#remeber to load model!!
 
 # In X_dict, we replace the words with their index
 X_test_cat, Y_test_cat = build_sequences(test_dict)
