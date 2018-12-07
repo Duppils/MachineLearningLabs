@@ -21,7 +21,7 @@ def save(file, corpus_dict, column_names):
             sentence_lst = []
             for row in sentence:
                 items = map(lambda x: row.get(x, '_'), column_names)
-                sentence_lst += '\t'.join(items) + '\n'
+                sentence_lst += ' '.join(items) + '\n' #was \t
             sentence_lst += '\n'
             f_out.write(''.join(sentence_lst))
 

@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from conll_dictorizer import CoNLLDictorizer, Token
+from conll_dictorizer import CoNLLDictorizer, Token, save
 import datasets as ds
 import sys
 from sklearn.feature_extraction import DictVectorizer
@@ -16,7 +16,7 @@ from keras.utils import to_categorical
 from keras.layers import LSTM, Bidirectional, SimpleRNN, Dense
 
 
-trace = True
+trace = False
 path = str(open('path.conf', 'r').read()).strip()
 
 OPTIMIZER = 'rmsprop'
@@ -107,6 +107,8 @@ train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
 
+save('trainout.txt', train_dict, column_names)
+
 embeddings_file = os.path.join(path, "corpus/glove.6B.100d.txt")
 embeddings_dict = load(embeddings_file)
 
@@ -168,8 +170,8 @@ model.layers[0].set_weights([embedding_matrix])
 model.layers[0].trainable = True
 model.add(LSTM(100, return_sequences=True))
 #model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
-#model.add(Bidirectional(LSTM(100, return_sequences=True)))
-#model.add(layers.Dropout(0.2))
+model.add(Bidirectional(LSTM(100, return_sequences=True)))
+model.add(layers.Dropout(0.2))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])
