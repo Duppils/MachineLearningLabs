@@ -166,10 +166,10 @@ model.add(layers.Embedding(len(vocabulary_words) + 2, EMBEDDING_DIM, mask_zero=T
 model.layers[0].set_weights([embedding_matrix])
 # The default is True
 model.layers[0].trainable = True
-model.add(SimpleRNN(100, return_sequences=True))
-model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
-#model.add(DropOut(0.5))
-# model.add(Bidirectional(LSTM(100, return_sequences=True)))
+model.add(LSTM(100, return_sequences=True))
+#model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
+#model.add(Bidirectional(LSTM(100, return_sequences=True)))
+#model.add(layers.Dropout(0.2))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])
