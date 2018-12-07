@@ -107,8 +107,10 @@ train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
 
+#overwrite column names to include our prediction column
+column_names.append("PRED")
+
 #change column names to have our predition column
-save('trainout.txt', test_dict, column_names)
 
 embeddings_file = os.path.join(path, "corpus/glove.6B.100d.txt")
 embeddings_dict = load(embeddings_file)
@@ -224,6 +226,10 @@ for sentence in pos_pred_num:
     pos_pred_cat = list(map(rev_pos_idx.get, pos_pred_idx))
     pos_pred += [pos_pred_cat]
 
+#add pos pred to test_dict
+for pred in pos_pred:
+    #add pred to test_dict in right column
+
 print(pos_pred[:2])
 print(Y_test_cat[:2])
 
@@ -250,3 +256,5 @@ for sentence in sentences:
     y_test_pred_cat = predict_sentence(sentence.lower(), model, word_idx, vocabulary_words, rev_pos_idx, trace)
     print(sentence)
     print(y_test_pred_cat)
+
+save('trainout.txt', test_dict, column_names)
