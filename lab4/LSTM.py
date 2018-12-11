@@ -14,7 +14,7 @@ import math
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.layers import LSTM, Bidirectional, SimpleRNN, Dense
-
+from keras.callbacks import ModelCheckpoint
 
 trace = False
 path = str(open('path.conf', 'r').read()).strip()
@@ -107,7 +107,10 @@ train_dict = conll_dict.transform(train_sentences)
 dev_dict = conll_dict.transform(dev_sentences)
 test_dict = conll_dict.transform(test_sentences)
 
-save('trainout.txt', train_dict, column_names)
+#overwrite column names to include our prediction column
+column_names.append("PRED")
+
+#change column names to have our predition column
 
 embeddings_file = os.path.join(path, "corpus/glove.6B.100d.txt")
 embeddings_dict = load(embeddings_file)
@@ -167,18 +170,19 @@ model = models.Sequential()
 model.add(layers.Embedding(len(vocabulary_words) + 2, EMBEDDING_DIM, mask_zero=True, input_length=None))
 model.layers[0].set_weights([embedding_matrix])
 # The default is True
-model.layers[0].trainable = True
-model.add(LSTM(100, return_sequences=True))
+model.layers[0].trainable = False
+#model.add(LSTM(100, return_sequences=True))
 #model.add(Bidirectional(SimpleRNN(100, return_sequences=True)))
-model.add(Bidirectional(LSTM(100, return_sequences=True)))
-model.add(layers.Dropout(0.2))
+model.add(Bidirectional(LSTM(100, dropout = 0.25, recurrent_dropout = 0.25, return_sequences=True)))
+model.add(layers.Dropout(0.25))
 model.add(Dense(NB_CLASSES + 2, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['acc'])
 model.summary()
-model.fit(X, Y_train, epochs=EPOCHS, batch_size=BATCH_SIZE)
-
-
+model.fit(X, Y_train, epochs=EPOCHS, batch_size=32, callbacks = [ModelCheckpoint("bestout.h5", save_best_only = True)]) #sök på model checkpoint
+#lägg till validation_data tuple (x, y)
+#dev_dict = validation
+#remeber to load model!!
 
 # In X_dict, we replace the words with their index
 X_test_cat, Y_test_cat = build_sequences(test_dict)
@@ -216,11 +220,14 @@ for sent_nbr, sent_pos_predictions in enumerate(corpus_pos_predictions):
     pos_pred_num += [sent_pos_predictions[-len(X_test_cat[sent_nbr]):]]
 print(pos_pred_num[:2])
 
+#add pos pred to test_dict
 pos_pred = []
 for sentence in pos_pred_num:
     pos_pred_idx = list(map(np.argmax, sentence))
     pos_pred_cat = list(map(rev_pos_idx.get, pos_pred_idx))
     pos_pred += [pos_pred_cat]
+    test_dict[pos_pred_idx].append(pos_pred_cat)
+
 
 print(pos_pred[:2])
 print(Y_test_cat[:2])
@@ -248,3 +255,5 @@ for sentence in sentences:
     y_test_pred_cat = predict_sentence(sentence.lower(), model, word_idx, vocabulary_words, rev_pos_idx, trace)
     print(sentence)
     print(y_test_pred_cat)
+
+save('trainout.txt', test_dict, column_names)
